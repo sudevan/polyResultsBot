@@ -85,8 +85,9 @@ def downloader(update, context):
         csvfilepath = max(list_of_files, key=os.path.getctime)
         print(csvfilepath)
         send_document(update,context,csvfilepath)
-      except:
+      except Exception as e:
         update.message.reply_text("Failed to unzip make sure the password is 1234. If issues still exists contact @sudevank")
+        print("Error : ",str(e))
         return
     else:
       csvfilepath=filepath
@@ -98,8 +99,9 @@ def downloader(update, context):
         for file in outputfiles:
             send_document(update,context,file)
         update.message.reply_text("Thank you... Please send your feedback  @sudevank")
-    except:
+    except Exception as e:
         update.message.reply_text("An exception occured. Please make sure the file not modified. Still error occures send the file to @sudevank")
+        print("Error : ",str(e))
 def analyscsv(filepath,chat_id):
   #folder = os.path.dirname(filepath)
   folder = str(chat_id)
@@ -146,6 +148,8 @@ def analyscsv(filepath,chat_id):
         resultdfs[sem].loc[index,"Name"] = name
         #print(code, coursenames[code] )
         index += 1
+      #course number is to skip grade count 
+      numberOfCourses = index-1
       resultsemindex[sem] =index
       allresultindex[dept] = resultsemindex
       #print(index)
@@ -197,6 +201,9 @@ def analyscsv(filepath,chat_id):
       for sem in semesters:
         #filename=folder+dept+"-Sem-"+str(sem)+".csv"
         for ind in allresult[dept][sem].index:
+          if ( ind <= numberOfCourses):
+            #skip course name area 
+            continue
           if(allresult[dept][sem].loc[ind,"Status"] == 'Withheld'):
             continue
           studentgrades=allresult[dept][sem].loc[ind].tolist()
