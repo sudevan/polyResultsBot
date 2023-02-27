@@ -127,6 +127,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-Dip R(21) E 2022 (1)-01-00010.csv
-844172161/Result-Dip R(21) E 2022 (1)-01-00010-Mechanical Engineering.xlsx
-result-Dip R(21) E 2022 (1)-01-00010 (1).zip
+*.csv
+*.xlsx
+*.zip
+*.pdf
