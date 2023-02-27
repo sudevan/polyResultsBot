@@ -8,6 +8,7 @@ from telegram.ext.filters import Filters
 import os
 import glob 
 import pandas as pd
+import math
 from telegram.ext import *
 # adding different functions to the bot  
 
@@ -16,7 +17,7 @@ the_updater = Updater("5900809165:AAEkFGQwgJfcg9Cyi5GsBMNlmejNGrVpGQk",
 
 def sendhelpmsg(update):
     update.message.reply_text(  
-        "Hello sir, Welcome to the SBTE Result Analysis. Please send the zip(with password 1234)/csv file downloaded from sbte without any modification. For any support contact t.me/sudevank"  
+        "Hello sir, Welcome to the SBTE Result Analysis. Please send the zip(with password 1234)/csv file downloaded from sbte without any modification. For any support contact @sudevank"  
         )  
     print(update.message.text)
 def the_start(update: Update, context: CallbackContext):  
@@ -102,6 +103,9 @@ def downloader(update, context):
     except Exception as e:
         update.message.reply_text("An exception occured. Please make sure the file not modified. Still error occures send the file to @sudevank")
         print("Error : ",str(e))
+def isNaN(string):
+    return string != string
+
 def analyscsv(filepath,chat_id):
   #folder = os.path.dirname(filepath)
   folder = str(chat_id)
@@ -170,7 +174,7 @@ def analyscsv(filepath,chat_id):
         resultdf.loc[resindex,coursecode+"IMark"] = df['IMark'][ind]
         resultdf.loc[resindex,coursecode+"Grade"] = df['Grade'][ind]
         index=resultdf[resultdf["RegNumber"] == regno].index
-        if ( df['Withheld'][ind] == "Withheld"):
+        if ( isNaN(df['Withheld'][ind]) == False):
           resultdf.loc[index,"Status"] = "Withheld"
         #elif ( df['Result'][ind] == "F"):
             #resultdf.loc[index,"Status"] = "F"
@@ -181,7 +185,7 @@ def analyscsv(filepath,chat_id):
         coursecode = str(df['Course'][ind].split("-")[0])
         resultdf.loc[index,coursecode+"IMark"] = df['IMark'][ind]
         resultdf.loc[index,coursecode+"Grade"] = df['Grade'][ind]
-        if ( df['Withheld'][ind] == "Withheld"):
+        if ( isNaN(df['Withheld'][ind]) == False):
           resultdf.loc[index,"Status"] = "Withheld"
         #elif ( df['Result'][ind] == "F"):
             #resultdf.loc[index,"Status"] = "F"
