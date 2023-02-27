@@ -23,32 +23,7 @@ def sendhelpmsg(update):
 def the_start(update: Update, context: CallbackContext):  
     sendhelpmsg(update) 
 def the_help(update: Update, context: CallbackContext):  
-    update.message.reply_text(  
-        """Available Commands :  
-        /youtube - To get the youtube URL  
-        /linkedin - To get the LinkedIn profile URL  
-        /gmail - To get gmail URL  
-        /jtp - To get the JavaTpoint.com URL""")  
-  
-def gmailURL(update: Update, context: CallbackContext):  
-    update.message.reply_text(  
-        "provide the gmail address here (For example, example@gmail.com)"  
-        )  
-  
-def youtubeURL(update: Update, context: CallbackContext):  
-    update.message.reply_text(  
-        "Link for the YouTube => https://www.youtube.com/"  
-        )  
-  
-def linkedInURL(update: Update, context: CallbackContext):  
-    update.message.reply_text(  
-        "URL to the LinkedIn Profile => https://www.linkedin.com/username/"  
-        )  
-  
-def jtpURL(update: Update, context: CallbackContext):  
-    update.message.reply_text(  
-        "URL to the official website => https://www.javatpoint.com/"  
-        )  
+    sendhelpmsg(update) 
   
 def unknownCommmand(update: Update, context: CallbackContext):  
     sendhelpmsg(update) 
@@ -231,11 +206,6 @@ def send_document(update, context,file):
     context.bot.send_document(chat_id, document)
 # adding the handler to handle the messages and commands  
 the_updater.dispatcher.add_handler(CommandHandler('start', the_start))  
-the_updater.dispatcher.add_handler(CommandHandler('youtube', youtubeURL))  
-the_updater.dispatcher.add_handler(CommandHandler('help', the_help))  
-the_updater.dispatcher.add_handler(CommandHandler('linkedin', linkedInURL))  
-the_updater.dispatcher.add_handler(CommandHandler('gmail', gmailURL))  
-the_updater.dispatcher.add_handler(CommandHandler('jtp', jtpURL))  
 the_updater.dispatcher.add_handler(MessageHandler(Filters.text, unknownCommmand))  
  # Filtering out unknown commands  
 the_updater.dispatcher.add_handler(MessageHandler(Filters.command, unknownCommmand))  
