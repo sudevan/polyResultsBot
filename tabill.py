@@ -4,10 +4,13 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4 ,landscape
 from reportlab.lib.units import inch, cm
 class TABill:
-    def __init__(self,TAFile):
+    def __init__(self,TAFile,template):
+
+        #read date from the TA File
+        self.readData(TAFile)
         packet = io.BytesIO()
         self.can = canvas.Canvas(packet, pagesize=landscape(A4))
-        
+
         self.updateNewCanvas()
         self.can.save()
         packet.seek(0)
@@ -17,7 +20,7 @@ class TABill:
         
 
         #read the TA bill
-        self.existing_pdf = PdfReader(open(TAFile, "rb"))
+        self.existing_pdf = PdfReader(open(template, "rb"))
         page = self.existing_pdf.pages[0]
         #merge with the gnerated file
         page.merge_page(self.newpdf.pages[0])
@@ -37,7 +40,12 @@ class TABill:
         self.can.drawString(x,y,data)
     def updateNewCanvas(self):
         basicPay = "56000"
-        self.printString(17.6,3.86,basicPay)
-        self.printString(.1,7.75,"GPC Palakkad")
-        self.printString(3.1,7.75,"27/2/2023")
-        
+        self.printString(17.6,3.86,self.employeeDetails["basicPay"] )
+        self.printString(.1,7.75,self.employeeDetails["name"] )
+        self.printString(3.1,7.75,self.employeeDetails["name"] )
+    def readData(self,pdfFile):
+        self.employeeDetails = {}
+        #read the pdf file and fill the data
+        self.employeeDetails["name"] = "Sudevan K"
+        self.employeeDetails["basicPay"] = "50000"
+        return         

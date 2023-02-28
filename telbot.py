@@ -38,7 +38,8 @@ def handleCsvFile(update,context,file):
   pass
 def handleTAFile(update,context,file,outputfilename):
   update.message.reply_text("Updating....") 
-  newtabill = TABill(file)
+  templatefile="TATemplate.pdf"
+  newtabill = TABill(file,templatefile)
   newtabill.saveBill(outputfilename)
   send_document(update,context,outputfilename)
   return
