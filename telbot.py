@@ -13,7 +13,7 @@ from telegram.ext import *
 from tabill import TABill
 # adding different functions to the bot  
 
-the_updater = Updater("5900809165:AAEkFGQwgJfcg9Cyi5GsBMNlmejNGrVpGQk",  
+the_updater = Updater("5961754854:AAF76nTUKBoA8sPDiIDAfpIPueyRyvIHu30",  
                 use_context = True)  
 
 def sendhelpmsg(update):
@@ -38,7 +38,8 @@ def handleCsvFile(update,context,file):
   pass
 def handleTAFile(update,context,file,outputfilename):
   update.message.reply_text("Updating....") 
-  newtabill = TABill(file)
+  templatefile="TATemplate.pdf"
+  newtabill = TABill(file,templatefile)
   newtabill.saveBill(outputfilename)
   send_document(update,context,outputfilename)
   return
@@ -93,5 +94,3 @@ the_updater.dispatcher.add_handler(MessageHandler(Filters.document, downloader))
 #the_updater.add_error_handler(error)
 # running the bot  
 the_updater.start_polling() 
-
-
