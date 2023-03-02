@@ -7,6 +7,8 @@ from reportlab.lib.units import inch, cm
 from reportlab.graphics.barcode import code128
 
 class TABill:
+    def __init__(self):
+        self.state = "initial"
     def __init__(self,TAFile,template):
 
         #read date from the TA File

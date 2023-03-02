@@ -13,16 +13,40 @@ from telegram.ext import *
 from tabill import TABill
 # adding different functions to the bot  
 
-the_updater = Updater("5961754854:AAF76nTUKBoA8sPDiIDAfpIPueyRyvIHu30",  
+userChatTrack ={}
+
+the_updater = Updater("5900809165:AAEkFGQwgJfcg9Cyi5GsBMNlmejNGrVpGQk",  
                 use_context = True)  
 
+def sendoptions(update):
+   chat_id = update.message.chat_id
+   if userChatTrack.has_key(chat_id):
+      instance = userChatTrack[chat_id]
+   else:
+       update.message.reply_text( "Could not track the message please start over")
+       return
+    #send the  option messsage with respect to the state of the chat History
+   if (instance.state == "initial"):
+      #send the option to get start date
+      instance.state = "startdate"
+      pass
+   elif(instance.state == "startdate"):
+      instance.startdate = update.message.text
+      instance.state = "enddate"
+   else:
+      update.message.reply_text( "Could not track the message please start over")
+  
 def sendhelpmsg(update):
     update.message.reply_text(  
         "Hello sir, Welcome to the SBTE Result Analysis. Please send the zip(with password 1234)/csv file downloaded from sbte without any modification. For any support contact @sudevank"  
         )  
     print(update.message.text)
-def the_start(update: Update, context: CallbackContext):  
-    sendhelpmsg(update) 
+def the_start(update: Update, context: CallbackContext):
+    chat_id = update.message.chat_id
+    if ( userChatTrack.has_key(chat_id)):
+       #create new user profile with state  inital
+       userChatTrack[chat_id] = TABill()
+    sendoptions()
 def the_help(update: Update, context: CallbackContext):  
     sendhelpmsg(update) 
   
