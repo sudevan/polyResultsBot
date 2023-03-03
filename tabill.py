@@ -111,7 +111,7 @@ class TABill:
         self.printString(18.50,2.40,self.data.get('from_date'))
         self.printString(23.50,2.40,self.data.get('to_date'))
 
-        self.printString(18.00,3.50,str(self.data.get('basic_pay')))
+        self.printString(18.00,3.50,str(int(self.data.get('basic_pay'))))
 
         self.printString(2.75,7.55,travelling_start_date)
         self.printString(2.75,8.20,travelling_start_date)
@@ -144,7 +144,7 @@ class TABill:
 
 
         self.printString(3.40,9.35,str(self.data.get('days')))
-        self.printString(7.20,9.35,str(self.data.get('da_pay')))
+        self.printString(7.20,9.35,str(int(self.data.get('da_pay'))))
 
         da_halt = int(self.data.get('da_pay') * self.data.get('days'))
 

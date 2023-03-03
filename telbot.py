@@ -84,8 +84,8 @@ def handleTAFile(update,context,file,outputfilename):
          data = json.load(infile)
         update.message.reply_text("Updating....") 
         templatefile="TATemplate.pdf"
-        userChatTrack[update.message.chat_id] = TABill(file,templatefile,data)
-        userChatTrack[update.message.chat_id].saveBill(outputfilename)
+        newbill = TABill(file,templatefile,data)
+        newbill.saveBill(outputfilename)
         send_document(update,context,outputfilename)
         return
   except FileNotFoundError:
@@ -177,7 +177,7 @@ def get_basic_pay(update, context):
 
     reply_keyboard = [['Cancel']]
     update.message.reply_text(
-        'Please enter the from DA pay \n /cancel to stop:',
+        'Please enter DA per day \n /cancel to stop:',
         # reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
     )
     # Move to next state
@@ -185,6 +185,8 @@ def get_basic_pay(update, context):
 
 
 def get_da_pay(update,context):
+    if update.message.chat_id not in userChatTrack:
+        userChatTrack.setdefault(update.message.chat_id, {})
     try:
         da_pay = float(update.message.text)
     except ValueError:
@@ -262,7 +264,6 @@ def get_to_date(update, context):
             "Data Saved Successfully\n Please upload TA Bill \n"
             # reply_markup=ReplyKeyboardMarkup(reply_keyboard,one_time_keyboard=True)
         )
-        del userChatTrack[update.message.chat_id]
         # Move to next state
         return ConversationHandler.END
 
