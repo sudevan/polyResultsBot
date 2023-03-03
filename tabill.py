@@ -149,21 +149,21 @@ class TABill:
         da_halt = int(self.data.get('da_pay') * self.data.get('days'))
 
         
+        incident_expense = int(self.data.get('da_pay')/2)
 
 
 
-        self.printString(20.00,8.10,str(int(self.data.get('da_pay')/2)))
+        self.printString(20.00,8.10,str(incident_expense))
         
-        self.printString(24.00,8.10,str(int(self.data.get('da_pay')+460)))
+        self.printString(24.00,8.10,str(incident_expense+460))
 
         self.printString(21.60,9.35,str(da_halt))
         self.printString(24.00,9.35,str(da_halt))
 
 
 
-
-        self.printString(20.00,10.60,str(int(self.data.get('da_pay')/2)))
-        self.printString(24.00,10.60,str(int(self.data.get('da_pay')+460)))
+        self.printString(20.00,10.60,str(incident_expense))
+        self.printString(24.00,10.60,str(incident_expense+460))
 
         total = int(1380 + da_halt + self.data.get('da_pay'))
 
