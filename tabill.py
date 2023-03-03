@@ -9,22 +9,19 @@ from reportlab.graphics.barcode import code128
 class TABill:
     def __init__(self):
         self.state = "initial"
-    def __init__(self,TAFile,template):
-
+    def __init__(self,TAFile,template,data):
         #read date from the TA File
-
- 
-
+        print(data)
         packet = io.BytesIO()
         self.can = canvas.Canvas(packet, pagesize=landscape(A4))
 
         self.updateNewCanvas()
 
-        reader = PdfReader(TAFile)
- 
 
-        page = reader.pages[0]
-        
+        self.data = data
+
+        reader = PdfReader(TAFile)
+        page = reader.pages[0] 
         # extracting text from page
         self.text = page.extract_text()
 
@@ -36,8 +33,6 @@ class TABill:
         self.newpdf =  PdfReader(packet)
         
 
-       
-
         #read the TA bill
         self.existing_pdf = PdfReader(open(template, "rb"))
         page = self.existing_pdf.pages[0]
@@ -48,16 +43,19 @@ class TABill:
         self.output = PdfWriter()
         self.output.add_page(page)
         
-
+        
     def saveBill(self,outputfile):
         print("saving file",outputfile)
         output_stream = open(outputfile, "wb")
         self.output.write(output_stream)
         output_stream.close()
-    def printString(self,x,y,data):
+    def printString(self,x,y,data,isBold=False):
         x = (x+1.1)*cm
         y = (20.35 - y)*cm
-        self.can.setFont("Helvetica", 9)
+        if isBold:
+            self.can.setFont("Helvetica-Bold", 10)
+        else:
+            self.can.setFont("Helvetica", 9)
         self.can.drawString(x,y,data)
     def updateNewCanvas(self):
         # basicPay = "56000"
@@ -106,48 +104,36 @@ class TABill:
         # self.personal_datas['account_no'] = account_no.group(1)
         # self.personal_datas['designation'] = designation.group(1)
 
-        # self.updateNewCanvas()
-        self.printString(4.60,3.00,name.group(1))
-        self.printString(4.60,3.60,camp_desg.group(1))
-        self.printString(4.60,4.10,designation.group(1))
-        self.printString(4.60,4.60,bank_name.group(1))
+        travelling_start_date = self.data.get('before_date')
+        travelling_end_date = self.data.get('after_date')
 
 
-        self.printString(18.,4.10,ifs_code.group(1))
-        self.printString(18.,4.60,account_no.group(1))
+        self.printString(18.50,2.40,self.data.get('from_date'))
+        self.printString(23.50,2.40,self.data.get('to_date'))
+
+        self.printString(18.00,3.50,str(self.data.get('basic_pay')))
+
+        self.printString(2.75,7.55,travelling_start_date)
+        self.printString(2.75,8.20,travelling_start_date)
+        self.printString(2.75,8.80,travelling_start_date)
+
+        self.printString(9.60,7.55,travelling_start_date)
+        self.printString(9.60,8.20,travelling_start_date)
+        self.printString(9.60,8.80,travelling_start_date)
 
 
-        self.printString(8.13,14.20,account_no.group(1)+" "+ifs_code.group(1)+" with " + bank_name.group(1))
-
-        self.printString(24.40,15.35,name.group(1))
-
-        self.printString(22.00,1.40,mobile_no.group(1))
-
-        # qr = qrcode.QRCode(version=1, box_size=10, border=4)
-
-        # qr.add_data(mobile_no.group(1))
-
-        # qr.make(fit=True)
-
-        # img = qr.make_image(fill_color="black", back_color="white")
+        self.printString(2.75,9.95,travelling_end_date)
+        self.printString(2.75,10.55,travelling_end_date)
+        self.printString(2.75,11.20,travelling_end_date)
 
 
-
-        barcode = code128.Code128(mobile_no.group(1),barHeight=.3*inch,barWidth = 1.4)
-
-
-        print(barcode)
-
-        x = (20.59+1.1)*cm
-        y = (20.35 - 0.65)*cm
+        self.printString(9.60,9.95,travelling_end_date)
+        self.printString(9.60,10.55,travelling_end_date)
+        self.printString(9.60,11.20,travelling_end_date)
 
 
-
-        barcode.drawOn(self.can, x, y)
-
-
-
-
+        self.printString(12.50,13.40,str(travelling_start_date))
+        self.printString(20.80,13.40,str(travelling_end_date))
 
 
 
@@ -157,7 +143,60 @@ class TABill:
 
 
 
+        self.printString(3.40,9.35,str(self.data.get('days')))
+        self.printString(7.20,9.35,str(self.data.get('da_pay')))
+
+        da_halt = int(self.data.get('da_pay') * self.data.get('days'))
+
+        
 
 
 
-        # return self.personal_datas
+        self.printString(20.00,8.10,str(int(self.data.get('da_pay')/2)))
+        
+        self.printString(24.00,8.10,str(int(self.data.get('da_pay')+460)))
+
+        self.printString(21.60,9.35,str(da_halt))
+        self.printString(24.00,9.35,str(da_halt))
+
+
+
+
+        self.printString(20.00,10.60,str(int(self.data.get('da_pay')/2)))
+        self.printString(24.00,10.60,str(int(self.data.get('da_pay')+460)))
+
+        total = int(1380 + da_halt + self.data.get('da_pay'))
+
+        self.printString(23.90,11.80,str(total),isBold=True)
+
+
+
+
+
+
+
+
+        
+        self.printString(4.70,3.00,name.group(1))
+        self.printString(4.70,3.60,camp_desg.group(1))
+        self.printString(4.70,4.10,designation.group(1))
+        self.printString(4.70,4.60,bank_name.group(1))
+
+
+        self.printString(18.,4.10,ifs_code.group(1))
+        self.printString(18.,4.60,account_no.group(1))
+
+
+        self.printString(7.30,14.00,account_no.group(1)+" "+ifs_code.group(1)+" with " + bank_name.group(1))
+
+        self.printString(24.10,15.20,name.group(1))
+
+        self.printString(22.00,1.40,mobile_no.group(1))
+
+        barcode = code128.Code128(mobile_no.group(1),barHeight=.3*inch,barWidth = 1.6)
+        print(barcode)
+
+        x = (20.59+1.1)*cm
+        y = (20.35 - 0.65)*cm
+        barcode.drawOn(self.can, x, y)
+
